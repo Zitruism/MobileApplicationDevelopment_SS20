@@ -1,6 +1,6 @@
 package de.zitruism.thl_todo_liste.injection;
 
-import android.app.Application;
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -15,6 +15,7 @@ public class ApplicationModule {
     }
 
     @Provides
+    @Singleton
     MyApplication provideApplication(){
         return application;
     }

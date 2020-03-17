@@ -8,14 +8,25 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.zitruism.thl_todo_liste.R;
 import de.zitruism.thl_todo_liste.database.model.Todo;
 import de.zitruism.thl_todo_liste.databinding.ItemListviewBinding;
+import de.zitruism.thl_todo_liste.interfaces.IListClickListener;
+import de.zitruism.thl_todo_liste.interfaces.ITodoStateListener;
 
-public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
+public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> implements View.OnClickListener {
 
     private List<Todo> todos;
+
+    private final ITodoStateListener mListener;
+    private final IListClickListener clickListener;
+
+    public ListAdapter(ITodoStateListener mListener, IListClickListener clickListener) {
+        this.mListener = mListener;
+        this.clickListener = clickListener;
+    }
 
     public void setData(List<Todo> todos){
         if(todos != null){
@@ -28,7 +39,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ItemListviewBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), viewType, parent, false);
-        return new ViewHolder(binding);
+        binding.getRoot().setOnClickListener(this);
+        return new ViewHolder(binding, mListener);
     }
 
     @Override
@@ -50,22 +62,42 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         return R.layout.item_listview;
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public void onClick(View v) {
+        clickListener.onListClick(v);
+    }
 
-        ItemListviewBinding binding;
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        ViewHolder(@NonNull ItemListviewBinding binding) {
+        private final ItemListviewBinding binding;
+        private final ITodoStateListener mListener;
+
+        ViewHolder(@NonNull ItemListviewBinding binding, ITodoStateListener mListener) {
             super(binding.getRoot());
             this.binding = binding;
+            this.mListener = mListener;
         }
 
         void bind(Todo todo) {
             binding.setTodo(todo);
-            binding.isDone.setTag(todo.getId());
-            binding.isFavorite.setTag(todo.getId());
+            binding.isDone.setOnClickListener(this);
+            binding.isFavorite.setOnClickListener(this);
+            binding.getRoot().setTag(binding.getTodo().getId());
         }
 
 
-
+        @Override
+        public void onClick(View v) {
+            switch(v.getId()){
+                case R.id.isDone:
+                    //Change done state
+                    mListener.updateDone(binding.getTodo().getId(), !binding.getTodo().isDone());
+                    break;
+                case R.id.isFavorite:
+                    //Change favorite state
+                    mListener.updateFavorite(binding.getTodo().getId(), !binding.getTodo().isFavorite());
+                    break;
+            }
+        }
     }
 }

@@ -8,6 +8,7 @@ import java.util.List;
 
 import androidx.databinding.BindingAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+import de.zitruism.thl_todo_liste.R;
 import de.zitruism.thl_todo_liste.database.model.Todo;
 import de.zitruism.thl_todo_liste.ui.adapters.ListAdapter;
 
@@ -20,20 +21,27 @@ public class BindingUtils {
         }
     }
 
-    @BindingAdapter("android:text")
+    @BindingAdapter("date")
     public static void setDateText(TextView textView, Date date){
+        System.out.println(textView);
         if(date != null)
             textView.setText(date.toString());
     }
 
     @BindingAdapter("isDone")
     public static void setDoneIcon(ImageView imageView, boolean isDone){
-
+        if(isDone)
+            imageView.setImageResource(R.drawable.ic_check_green_24dp);
+        else
+            imageView.setImageResource(R.drawable.ic_check_black_24dp_transparent);
     }
 
     @BindingAdapter("isFavorite")
     public static void setFavoriteIcon(ImageView imageView, boolean isFavorite){
-
+        if(isFavorite)
+            imageView.setImageResource(R.drawable.ic_star_yellow_24dp);
+        else
+            imageView.setImageResource(R.drawable.ic_star_border_black_24dp);
     }
 
 }

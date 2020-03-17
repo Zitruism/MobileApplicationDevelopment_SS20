@@ -32,4 +32,12 @@ public class TodoRepository {
         todoDAO.insert(todo);
     }
 
+    public void updateDone(Integer id, boolean isDone){
+        todoDAO.updateDone(id, isDone);
+    }
+
+    public void updateFavorite(Integer id, boolean isFavorite){
+        todoDAO.updateFavorite(id, isFavorite);
+    }
+
 }

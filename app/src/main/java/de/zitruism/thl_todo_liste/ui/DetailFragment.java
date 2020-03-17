@@ -2,14 +2,11 @@ package de.zitruism.thl_todo_liste.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -18,23 +15,23 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.navigation.fragment.NavHostFragment;
 import de.zitruism.thl_todo_liste.R;
 import de.zitruism.thl_todo_liste.database.model.Todo;
-import de.zitruism.thl_todo_liste.databinding.FragmentListBinding;
-import de.zitruism.thl_todo_liste.interfaces.IListClickListener;
+import de.zitruism.thl_todo_liste.databinding.FragmentDetailBinding;
 import de.zitruism.thl_todo_liste.interfaces.IMainActivity;
 import de.zitruism.thl_todo_liste.interfaces.ITodoStateListener;
-import de.zitruism.thl_todo_liste.ui.adapters.ListAdapter;
-import de.zitruism.thl_todo_liste.ui.viewmodel.ListViewModel;
+import de.zitruism.thl_todo_liste.ui.viewmodel.DetailViewModel;
 
-public class ListFragment extends Fragment implements View.OnClickListener, ITodoStateListener, IListClickListener {
+public class DetailFragment extends Fragment implements View.OnClickListener, ITodoStateListener {
 
     private IMainActivity mListener;
-    private FragmentListBinding binding;
+    private FragmentDetailBinding binding;
+
+    private final static String BUNDLE_IDKEY = "TODO_ID";
+    private int todoId;
 
     @Inject
-    ListViewModel viewModel;
+    DetailViewModel viewModel;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -53,10 +50,14 @@ public class ListFragment extends Fragment implements View.OnClickListener, ITod
         mListener = null;
     }
 
-    public ListFragment(){}
+    public DetailFragment(){}
 
-    public static ListFragment newInstance() {
-        return new ListFragment();
+    public static DetailFragment newInstance(Integer id) {
+        DetailFragment df = new DetailFragment();
+        Bundle b = new Bundle();
+        b.putInt(BUNDLE_IDKEY, id);
+        df.setArguments(b);
+        return df;
     }
 
     @Override
@@ -65,33 +66,44 @@ public class ListFragment extends Fragment implements View.OnClickListener, ITod
         mListener.getMyApplication()
                 .getApplicationComponent()
                 .inject(this);
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            todoId = bundle.getInt(BUNDLE_IDKEY, -1);
+        }
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        viewModel.getTodos().observe(getViewLifecycleOwner(), new Observer<List<Todo>>() {
-            @Override
-            public void onChanged(List<Todo> todos) {
-                binding.setTodos(todos);
-            }
-        });
+        if(todoId >= 0){
+            viewModel.getTodo(todoId).observe(getViewLifecycleOwner(), new Observer<Todo>() {
+                @Override
+                public void onChanged(Todo todo) {
+                    binding.setTodo(todo);
+                }
+            });
+        }
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list, container,false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_detail, container,false);
         binding.setLifecycleOwner(this);
-        binding.listView.setAdapter(new ListAdapter(this, this));
-        binding.addButton.setOnClickListener(this);
-
         return binding.getRoot();
     }
-    
+
     @Override
     public void onClick(View v) {
-        viewModel.insert(new Todo("Erstes TODO", "Beschreibung", false, false, new Date()));
+        switch(v.getId()){
+            case R.id.isDone:
+                updateDone(binding.getTodo().getId(), !binding.getTodo().isDone());
+                break;
+            case R.id.isFavorite:
+                updateFavorite(binding.getTodo().getId(), !binding.getTodo().isFavorite());
+                break;
+        }
     }
 
     @Override
@@ -102,18 +114,5 @@ public class ListFragment extends Fragment implements View.OnClickListener, ITod
     @Override
     public void updateFavorite(Integer id, boolean isFavorite) {
         viewModel.updateFavorite(id, isFavorite);
-    }
-
-    @Override
-    public void onListClick(View v) {
-        //Go to Detailview
-        int id = (int) v.getTag();
-
-        //Navigate to Detailpage with given id.
-        Bundle b = new Bundle();
-        b.putInt("TODO_ID", id);
-
-        NavHostFragment.findNavController(this).navigate(R.id.action_listFragment_to_detailFragment, b);
-
     }
 }

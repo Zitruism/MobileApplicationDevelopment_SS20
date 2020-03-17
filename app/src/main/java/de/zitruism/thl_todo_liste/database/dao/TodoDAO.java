@@ -24,6 +24,12 @@ public interface TodoDAO {
     @Insert
     void insert(Todo todo);
 
+    @Query("UPDATE Todo SET done = :isDone WHERE id LIKE :id;")
+    void updateDone(Integer id, boolean isDone);
+
+    @Query("UPDATE Todo SET favorite = :isFavorite WHERE id LIKE :id;")
+    void updateFavorite(Integer id, boolean isFavorite);
+
     @Delete
     void delete(Todo todo);
 }

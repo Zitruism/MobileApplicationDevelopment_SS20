@@ -11,21 +11,17 @@ import androidx.lifecycle.ViewModel;
 import de.zitruism.thl_todo_liste.database.model.Todo;
 import de.zitruism.thl_todo_liste.database.repository.TodoRepository;
 
-public class ListViewModel extends ViewModel {
+public class DetailViewModel extends ViewModel {
 
     private TodoRepository todoRepository;
 
     @Inject
-    public ListViewModel(TodoRepository todoRepository) {
+    public DetailViewModel(TodoRepository todoRepository) {
         this.todoRepository = todoRepository;
     }
 
-    public LiveData<List<Todo>> getTodos(){
-        return todoRepository.getAll();
-    }
-
-    public void insert(Todo todo){
-        new InsertTodo(todoRepository).execute(todo);
+    public LiveData<Todo> getTodo(int id){
+        return todoRepository.getTodo(id);
     }
 
     public void updateDone(Integer id, boolean isDone){
@@ -34,21 +30,6 @@ public class ListViewModel extends ViewModel {
 
     public void updateFavorite(Integer id, boolean isFavorite){
         new UpdateFavorite(todoRepository, id, isFavorite).execute();
-    }
-
-    private static class InsertTodo extends AsyncTask<Todo, Void, Void> {
-
-        private TodoRepository todoRepository;
-
-        InsertTodo(TodoRepository todoRepository) {
-            this.todoRepository = todoRepository;
-        }
-
-        @Override
-        protected Void doInBackground(Todo... todos) {
-            todoRepository.insertTodo(todos[0]);
-            return null;
-        }
     }
 
     private static class UpdateDone extends AsyncTask<Void, Void, Void> {
