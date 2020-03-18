@@ -24,31 +24,12 @@ public class ListViewModel extends ViewModel {
         return todoRepository.getAll();
     }
 
-    public void insert(Todo todo){
-        new InsertTodo(todoRepository).execute(todo);
-    }
-
     public void updateDone(Integer id, boolean isDone){
         new UpdateDone(todoRepository, id, isDone).execute();
     }
 
     public void updateFavorite(Integer id, boolean isFavorite){
         new UpdateFavorite(todoRepository, id, isFavorite).execute();
-    }
-
-    private static class InsertTodo extends AsyncTask<Todo, Void, Void> {
-
-        private TodoRepository todoRepository;
-
-        InsertTodo(TodoRepository todoRepository) {
-            this.todoRepository = todoRepository;
-        }
-
-        @Override
-        protected Void doInBackground(Todo... todos) {
-            todoRepository.insertTodo(todos[0]);
-            return null;
-        }
     }
 
     private static class UpdateDone extends AsyncTask<Void, Void, Void> {

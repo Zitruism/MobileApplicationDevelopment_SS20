@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.Date;
-
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
@@ -15,14 +13,14 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.navigation.fragment.NavHostFragment;
 import de.zitruism.thl_todo_liste.R;
 import de.zitruism.thl_todo_liste.database.model.Todo;
 import de.zitruism.thl_todo_liste.databinding.FragmentDetailBinding;
 import de.zitruism.thl_todo_liste.interfaces.IMainActivity;
-import de.zitruism.thl_todo_liste.interfaces.ITodoStateListener;
 import de.zitruism.thl_todo_liste.ui.viewmodel.DetailViewModel;
 
-public class DetailFragment extends Fragment implements View.OnClickListener, ITodoStateListener {
+public class DetailFragment extends Fragment implements View.OnClickListener {
 
     private IMainActivity mListener;
     private FragmentDetailBinding binding;
@@ -83,6 +81,8 @@ public class DetailFragment extends Fragment implements View.OnClickListener, IT
                     binding.setTodo(todo);
                 }
             });
+        }else{
+            binding.setTodo(new Todo());
         }
     }
 
@@ -91,6 +91,13 @@ public class DetailFragment extends Fragment implements View.OnClickListener, IT
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_detail, container,false);
         binding.setLifecycleOwner(this);
+
+        binding.isDone.setOnClickListener(this);
+        binding.isFavorite.setOnClickListener(this);
+
+        binding.abort.setOnClickListener(this);
+        binding.save.setOnClickListener(this);
+
         return binding.getRoot();
     }
 
@@ -98,21 +105,33 @@ public class DetailFragment extends Fragment implements View.OnClickListener, IT
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.isDone:
-                updateDone(binding.getTodo().getId(), !binding.getTodo().isDone());
+                binding.getTodo().setDone(!binding.getTodo().isDone());
                 break;
             case R.id.isFavorite:
-                updateFavorite(binding.getTodo().getId(), !binding.getTodo().isFavorite());
+                binding.getTodo().setFavorite(!binding.getTodo().isFavorite());
+                break;
+            case R.id.save:
+                if(binding.getTodo().getId() >= 0)
+                    saveTodo(binding.getTodo());
+                else
+                    createTodo(binding.getTodo());
+                navToList();
+                break;
+            case R.id.abort:
+                navToList();
                 break;
         }
     }
 
-    @Override
-    public void updateDone(Integer id, boolean isDone) {
-        viewModel.updateDone(id, isDone);
+    private void createTodo(Todo todo) {
+        viewModel.insert(todo);
     }
 
-    @Override
-    public void updateFavorite(Integer id, boolean isFavorite) {
-        viewModel.updateFavorite(id, isFavorite);
+    private void saveTodo(Todo todo){
+        viewModel.updateTodo(todo);
+    }
+
+    private void navToList(){
+        NavHostFragment.findNavController(this).navigate(R.id.action_detailFragment_to_listFragment);
     }
 }

@@ -40,4 +40,8 @@ public class TodoRepository {
         todoDAO.updateFavorite(id, isFavorite);
     }
 
+    public void updateTodo(Todo todo){
+        todoDAO.updateTodo(todo);
+    }
+
 }

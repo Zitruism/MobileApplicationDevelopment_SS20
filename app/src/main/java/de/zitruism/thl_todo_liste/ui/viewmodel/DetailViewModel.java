@@ -2,8 +2,6 @@ package de.zitruism.thl_todo_liste.ui.viewmodel;
 
 import android.os.AsyncTask;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import androidx.lifecycle.LiveData;
@@ -24,48 +22,40 @@ public class DetailViewModel extends ViewModel {
         return todoRepository.getTodo(id);
     }
 
-    public void updateDone(Integer id, boolean isDone){
-        new UpdateDone(todoRepository, id, isDone).execute();
+    public void updateTodo(Todo todo) {
+        new UpdateTodo(todoRepository).execute(todo);
     }
 
-    public void updateFavorite(Integer id, boolean isFavorite){
-        new UpdateFavorite(todoRepository, id, isFavorite).execute();
+    public void insert(Todo todo){
+        new InsertTodo(todoRepository).execute(todo);
     }
 
-    private static class UpdateDone extends AsyncTask<Void, Void, Void> {
+    private static class UpdateTodo extends AsyncTask<Todo, Void, Void> {
 
         private final TodoRepository todoRepository;
-        private final Integer id;
-        private final boolean isDone;
 
-        UpdateDone(TodoRepository todoRepository, Integer id, boolean isDone) {
+        UpdateTodo(TodoRepository todoRepository) {
             this.todoRepository = todoRepository;
-            this.id = id;
-            this.isDone = isDone;
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
-            todoRepository.updateDone(id, isDone);
+        protected Void doInBackground(Todo... todos) {
+            todoRepository.updateTodo(todos[0]);
             return null;
         }
     }
 
-    private static class UpdateFavorite extends AsyncTask<Void, Void, Void> {
+    private static class InsertTodo extends AsyncTask<Todo, Void, Void> {
 
-        private final TodoRepository todoRepository;
-        private final Integer id;
-        private final boolean isDone;
+        private TodoRepository todoRepository;
 
-        UpdateFavorite(TodoRepository todoRepository, Integer id, boolean isDone) {
+        InsertTodo(TodoRepository todoRepository) {
             this.todoRepository = todoRepository;
-            this.id = id;
-            this.isDone = isDone;
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
-            todoRepository.updateFavorite(id, isDone);
+        protected Void doInBackground(Todo... todos) {
+            todoRepository.insertTodo(todos[0]);
             return null;
         }
     }

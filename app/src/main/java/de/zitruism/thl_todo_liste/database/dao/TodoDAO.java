@@ -7,6 +7,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 import de.zitruism.thl_todo_liste.database.model.Todo;
 
 @Dao
@@ -32,4 +33,7 @@ public interface TodoDAO {
 
     @Delete
     void delete(Todo todo);
+
+    @Update
+    void updateTodo(Todo todo);
 }

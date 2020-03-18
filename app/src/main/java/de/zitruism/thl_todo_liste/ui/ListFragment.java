@@ -91,7 +91,7 @@ public class ListFragment extends Fragment implements View.OnClickListener, ITod
     
     @Override
     public void onClick(View v) {
-        viewModel.insert(new Todo("Erstes TODO", "Beschreibung", false, false, new Date()));
+        NavHostFragment.findNavController(this).navigate(R.id.action_listFragment_to_detailFragment);
     }
 
     @Override
@@ -114,6 +114,5 @@ public class ListFragment extends Fragment implements View.OnClickListener, ITod
         b.putInt("TODO_ID", id);
 
         NavHostFragment.findNavController(this).navigate(R.id.action_listFragment_to_detailFragment, b);
-
     }
 }

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">TODO-Liste</string>
+    <string name="btn_save">Speichern</string>
+    <string name="btn_abort">Abbrechen</string>
+    <string name="hint_description">Beschreibung</string>
+    <string name="hint_name">Titel</string>
+    <string name="btn_create">Erstellen</string>
 </resources>

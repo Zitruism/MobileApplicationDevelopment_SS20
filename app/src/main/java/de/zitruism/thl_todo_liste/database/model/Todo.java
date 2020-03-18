@@ -26,13 +26,7 @@ public class Todo {
 
     private Date dueDate;
 
-    public Todo(String name, String description, boolean done, boolean favorite, Date dueDate) {
-        this.name = name;
-        this.description = description;
-        this.done = done;
-        this.favorite = favorite;
-        this.dueDate = dueDate;
-    }
+    public Todo() {}
 
     public Integer getId() {
         return id;
