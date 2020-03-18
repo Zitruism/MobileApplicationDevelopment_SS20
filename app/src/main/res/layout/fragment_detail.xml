@@ -75,9 +75,21 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <Button
+                    android:id="@+id/addContact"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/description"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:text="@string/btn_addContact" />
+
+                <!--<androidx.recyclerview.widget.RecyclerView
+                    app:layout_constraintTop_toBottomOf="@id/addContact"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:contacts="@{todo.getContacts()}"/>-->
+
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
         </ScrollView>
 
@@ -106,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 style="?android:attr/buttonBarPositiveButtonStyle"
-                android:text="@{todo.id >= 0 ? @string/btn_save : @string/btn_create"/>
+                android:text="@{todo.id != null ? @string/btn_save : @string/btn_create}"/>
 
         </LinearLayout>
 

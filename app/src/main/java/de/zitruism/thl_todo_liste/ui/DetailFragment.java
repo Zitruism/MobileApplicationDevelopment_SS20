@@ -111,7 +111,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
                 binding.getTodo().setFavorite(!binding.getTodo().isFavorite());
                 break;
             case R.id.save:
-                if(binding.getTodo().getId() >= 0)
+                if(binding.getTodo().getId() != null)
                     saveTodo(binding.getTodo());
                 else
                     createTodo(binding.getTodo());
