@@ -6,4 +6,9 @@
     <string name="hint_name">Titel</string>
     <string name="btn_create">Erstellen</string>
     <string name="btn_addContact">Kontakt hinzufügen</string>
+    <string name="btn_date">Datum</string>
+    <string name="btn_time">Uhrzeit</string>
+    <string name="apply">Übernehmen</string>
+    <string name="abort">Abbrechen</string>
+    <string name="hint_dueDate">Fällig am</string>
 </resources>

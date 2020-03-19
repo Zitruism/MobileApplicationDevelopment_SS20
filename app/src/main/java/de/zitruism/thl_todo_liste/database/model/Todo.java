@@ -3,6 +3,7 @@ package de.zitruism.thl_todo_liste.database.model;
 
 
 import java.util.Date;
+import java.util.List;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

@@ -3,6 +3,9 @@ package de.zitruism.thl_todo_liste.ui.binding;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.material.textfield.TextInputEditText;
+
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -23,9 +26,16 @@ public class BindingUtils {
 
     @BindingAdapter("date")
     public static void setDateText(TextView textView, Date date){
-        System.out.println(textView);
-        if(date != null)
-            textView.setText(date.toString());
+        if(date != null){
+            textView.setText(DateFormat.getDateTimeInstance().format(date));
+        }
+    }
+
+    @BindingAdapter("date")
+    public static void setDateText(TextInputEditText textView, Date date){
+        if(date != null){
+            textView.setText(DateFormat.getDateTimeInstance().format(date));
+        }
     }
 
     @BindingAdapter("isDone")
