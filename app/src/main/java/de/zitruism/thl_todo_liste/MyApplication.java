@@ -6,6 +6,7 @@ import de.zitruism.thl_todo_liste.injection.ApplicationComponent;
 import de.zitruism.thl_todo_liste.injection.ApplicationModule;
 import de.zitruism.thl_todo_liste.injection.DaggerApplicationComponent;
 import de.zitruism.thl_todo_liste.injection.RoomModule;
+import de.zitruism.thl_todo_liste.injection.ViewModelModule;
 
 public class MyApplication extends Application {
 
@@ -19,6 +20,7 @@ public class MyApplication extends Application {
                 .builder()
                 .applicationModule(new ApplicationModule(this))
                 .roomModule(new RoomModule(this))
+                .viewModelModule(new ViewModelModule())
                 .build();
     }
 

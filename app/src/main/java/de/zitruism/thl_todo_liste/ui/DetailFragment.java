@@ -25,19 +25,20 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 import de.zitruism.thl_todo_liste.R;
 import de.zitruism.thl_todo_liste.database.model.Contact;
 import de.zitruism.thl_todo_liste.database.model.Todo;
+import de.zitruism.thl_todo_liste.database.repository.TodoRepository;
 import de.zitruism.thl_todo_liste.databinding.FragmentDetailBinding;
 import de.zitruism.thl_todo_liste.interfaces.IListClickListener;
 import de.zitruism.thl_todo_liste.interfaces.IMainActivity;
 import de.zitruism.thl_todo_liste.ui.adapters.ContactListAdapter;
 import de.zitruism.thl_todo_liste.ui.adapters.TodoContactListAdapter;
 import de.zitruism.thl_todo_liste.ui.viewmodel.DetailViewModel;
+import de.zitruism.thl_todo_liste.ui.viewmodel.ViewModelFactory;
 
 public class DetailFragment extends Fragment implements View.OnClickListener, IListClickListener {
 
@@ -51,10 +52,15 @@ public class DetailFragment extends Fragment implements View.OnClickListener, IL
     private DatePicker datePicker;
     private TimePicker timePicker;
 
-    @Inject
-    DetailViewModel viewModel;
+    private DetailViewModel viewModel;
     private AlertDialog contactListDialog;
     private ContactListAdapter contactListAdapter;
+
+    @Inject
+    ViewModelFactory viewModelFactory;
+
+    @Inject
+    TodoRepository todoRepository;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -99,18 +105,41 @@ public class DetailFragment extends Fragment implements View.OnClickListener, IL
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(DetailViewModel.class);
+
         if(todoId >= 0){
-            viewModel.getTodo(todoId).observe(getViewLifecycleOwner(), new Observer<Todo>() {
+            if(viewModel.getTodo().getValue() == null)
+                viewModel.getTodo(todoId).observe(getViewLifecycleOwner(), new Observer<Todo>() {
+                    @Override
+                    public void onChanged(Todo todo) {
+                        viewModel.setTodo(todo);
+                        binding.setTodo(todo);
+                    }
+                });
+            else
+                viewModel.getTodo().observe(getViewLifecycleOwner(), new Observer<Todo>() {
+                    @Override
+                    public void onChanged(Todo todo) {
+                        binding.setTodo(todo);
+                    }
+                });
+        }else{
+            if(viewModel.getTodo().getValue() == null)
+                viewModel.setTodo(new Todo());
+            viewModel.getTodo().observe(getViewLifecycleOwner(), new Observer<Todo>() {
                 @Override
                 public void onChanged(Todo todo) {
-                    System.out.println(todo.getContacts());
                     binding.setTodo(todo);
-                    setBindingContacts();
                 }
             });
-        }else{
-            binding.setTodo(new Todo());
         }
+        viewModel.getTodoContacts().observe(getViewLifecycleOwner(), new Observer<List<Contact>>() {
+            @Override
+            public void onChanged(List<Contact> contacts) {
+                binding.setContacts(contacts);
+            }
+        });
     }
 
     @Override
@@ -131,6 +160,20 @@ public class DetailFragment extends Fragment implements View.OnClickListener, IL
         binding.save.setOnClickListener(this);
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onPause() {
+        if(datetimeDialog != null){
+            datetimeDialog.dismiss();
+            datetimeDialog = null;
+        }
+        if(contactListDialog != null){
+            contactListDialog.dismiss();
+            contactListDialog = null;
+        }
+
+        super.onPause();
     }
 
     @Override
@@ -321,7 +364,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener, IL
     }
 
     private void setBindingContacts(){
-        binding.setContacts(getContacts(binding.getTodo().getContacts(), true));
+        viewModel.setTodoContacts(getContacts(binding.getTodo().getContacts(), true));
     }
 
     @Override

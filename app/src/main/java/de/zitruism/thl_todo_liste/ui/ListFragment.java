@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.fragment.NavHostFragment;
 import de.zitruism.thl_todo_liste.R;
 import de.zitruism.thl_todo_liste.database.model.Todo;
@@ -23,7 +24,9 @@ import de.zitruism.thl_todo_liste.interfaces.IListClickListener;
 import de.zitruism.thl_todo_liste.interfaces.IMainActivity;
 import de.zitruism.thl_todo_liste.interfaces.ITodoStateListener;
 import de.zitruism.thl_todo_liste.ui.adapters.TodoListAdapter;
+import de.zitruism.thl_todo_liste.ui.viewmodel.DetailViewModel;
 import de.zitruism.thl_todo_liste.ui.viewmodel.ListViewModel;
+import de.zitruism.thl_todo_liste.ui.viewmodel.ViewModelFactory;
 
 public class ListFragment extends Fragment implements View.OnClickListener, ITodoStateListener, IListClickListener {
 
@@ -31,7 +34,9 @@ public class ListFragment extends Fragment implements View.OnClickListener, ITod
     private FragmentListBinding binding;
 
     @Inject
-    ListViewModel viewModel;
+    ViewModelFactory viewModelFactory;
+
+    private ListViewModel viewModel;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -40,7 +45,7 @@ public class ListFragment extends Fragment implements View.OnClickListener, ITod
             mListener = (IMainActivity) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement MainActivity");
+                    + " must implement IMainActivity");
         }
     }
 
@@ -67,6 +72,9 @@ public class ListFragment extends Fragment implements View.OnClickListener, ITod
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ListViewModel.class);
+
         viewModel.getTodos().observe(getViewLifecycleOwner(), new Observer<List<Todo>>() {
             @Override
             public void onChanged(List<Todo> todos) {

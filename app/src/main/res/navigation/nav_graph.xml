@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
-    app:startDestination="@id/listFragment">
+    app:startDestination="@id/startFragment">
 
     <fragment
         android:id="@+id/listFragment"
@@ -24,6 +24,17 @@
             app:destination="@id/listFragment"
             app:launchSingleTop="false"
             app:popUpTo="@id/listFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/startFragment"
+        android:name="de.zitruism.thl_todo_liste.ui.StartFragment"
+        android:label="StartFragment" >
+        <action
+            android:id="@+id/action_startFragment_to_listFragment"
+            app:destination="@id/listFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/startFragment"
             app:popUpToInclusive="true" />
     </fragment>
 </navigation>
