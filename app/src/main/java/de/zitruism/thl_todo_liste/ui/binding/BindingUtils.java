@@ -12,15 +12,20 @@ import java.util.List;
 import androidx.databinding.BindingAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import de.zitruism.thl_todo_liste.R;
+import de.zitruism.thl_todo_liste.database.model.Contact;
 import de.zitruism.thl_todo_liste.database.model.Todo;
-import de.zitruism.thl_todo_liste.ui.adapters.ListAdapter;
+import de.zitruism.thl_todo_liste.ui.adapters.TodoContactListAdapter;
+import de.zitruism.thl_todo_liste.ui.adapters.TodoListAdapter;
 
 public class BindingUtils {
     @BindingAdapter("data")
     public static void setRecyclerViewData(RecyclerView recyclerView, List<?> items) {
-        if(recyclerView.getAdapter() instanceof ListAdapter){
-            if(items != null)
-                ((ListAdapter) recyclerView.getAdapter()).setData((List<Todo>) items);
+        if(items != null){
+            if(recyclerView.getAdapter() instanceof TodoListAdapter){
+                ((TodoListAdapter) recyclerView.getAdapter()).setData((List<Todo>) items);
+            }else if(recyclerView.getAdapter() instanceof TodoContactListAdapter){
+                ((TodoContactListAdapter) recyclerView.getAdapter()).setData((List<Contact>) items);
+            }
         }
     }
 

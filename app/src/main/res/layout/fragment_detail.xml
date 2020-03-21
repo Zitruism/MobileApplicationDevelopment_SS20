@@ -5,6 +5,9 @@
         <variable
             name="todo"
             type="de.zitruism.thl_todo_liste.database.model.Todo" />
+        <variable
+            name="contacts"
+            type="java.util.List" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -101,11 +104,15 @@
                     app:layout_constraintStart_toStartOf="parent"
                     android:text="@string/btn_addContact" />
 
-                <!--<androidx.recyclerview.widget.RecyclerView
-                    app:layout_constraintTop_toBottomOf="@id/addContact"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/contactList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:contacts="@{todo.getContacts()}"/>-->
+                    app:layout_constraintTop_toBottomOf="@id/addContact"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:data="@{contacts}"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

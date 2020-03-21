@@ -2,14 +2,11 @@ package de.zitruism.thl_todo_liste.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -25,7 +22,7 @@ import de.zitruism.thl_todo_liste.databinding.FragmentListBinding;
 import de.zitruism.thl_todo_liste.interfaces.IListClickListener;
 import de.zitruism.thl_todo_liste.interfaces.IMainActivity;
 import de.zitruism.thl_todo_liste.interfaces.ITodoStateListener;
-import de.zitruism.thl_todo_liste.ui.adapters.ListAdapter;
+import de.zitruism.thl_todo_liste.ui.adapters.TodoListAdapter;
 import de.zitruism.thl_todo_liste.ui.viewmodel.ListViewModel;
 
 public class ListFragment extends Fragment implements View.OnClickListener, ITodoStateListener, IListClickListener {
@@ -83,7 +80,7 @@ public class ListFragment extends Fragment implements View.OnClickListener, ITod
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list, container,false);
         binding.setLifecycleOwner(this);
-        binding.listView.setAdapter(new ListAdapter(this, this));
+        binding.listView.setAdapter(new TodoListAdapter(this, this));
         binding.addButton.setOnClickListener(this);
 
         return binding.getRoot();

@@ -4,6 +4,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -15,14 +18,14 @@ import de.zitruism.thl_todo_liste.databinding.ItemListviewBinding;
 import de.zitruism.thl_todo_liste.interfaces.IListClickListener;
 import de.zitruism.thl_todo_liste.interfaces.ITodoStateListener;
 
-public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> implements View.OnClickListener {
+public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.ViewHolder> implements View.OnClickListener {
 
     private List<Todo> todos;
 
     private final ITodoStateListener mListener;
     private final IListClickListener clickListener;
 
-    public ListAdapter(ITodoStateListener mListener, IListClickListener clickListener) {
+    public TodoListAdapter(ITodoStateListener mListener, IListClickListener clickListener) {
         this.mListener = mListener;
         this.clickListener = clickListener;
     }
@@ -30,8 +33,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> im
     public void setData(List<Todo> todos){
         if(todos != null){
             this.todos = todos;
-            this.notifyDataSetChanged();
+            this.sortData();
         }
+    }
+
+    public void sortData(){
+        Collections.sort(this.todos, new TodoComparator(false));
+        this.notifyDataSetChanged();
     }
 
     @NonNull
@@ -64,6 +72,45 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> im
     @Override
     public void onClick(View v) {
         clickListener.onListClick(v);
+    }
+
+    static class TodoComparator implements Comparator<Todo> {
+
+        private boolean sortFavoriteAndDate;
+
+        TodoComparator(boolean sortFavoriteAndDate) {
+            this.sortFavoriteAndDate = sortFavoriteAndDate;
+        }
+
+        @Override
+        public int compare(Todo o1, Todo o2) {
+            int i = 0;
+            if(o1.isDone() && !o2.isDone())
+                i = -1;
+            else if(!o1.isDone() && o2.isDone())
+                i = 1;
+            if(i != 0) return i;
+
+            if(sortFavoriteAndDate){
+                if(o1.isFavorite() && !o2.isFavorite())
+                    i = -1;
+                else if(!o1.isFavorite() && o2.isFavorite())
+                    i = 1;
+                if(i != 0) return i;
+                i = o1.getDueDate().compareTo(o2.getDueDate());
+            }else{
+                i = o1.getDueDate().compareTo(o2.getDueDate());
+                if(i != 0) return i;
+
+                if(o1.isFavorite() && !o2.isFavorite())
+                    i = -1;
+                else if(!o1.isFavorite() && o2.isFavorite())
+                    i = 1;
+            }
+
+            return i;
+
+        }
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

@@ -2,6 +2,7 @@ package de.zitruism.thl_todo_liste.database.model;
 
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +27,8 @@ public class Todo {
     private boolean favorite = false;
 
     private Date dueDate;
+
+    private List<String> contacts = new ArrayList<>();
 
     public Todo() {}
 
@@ -75,5 +78,13 @@ public class Todo {
 
     public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public List<String> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(List<String> contacts) {
+        this.contacts = contacts;
     }
 }

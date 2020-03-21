@@ -11,4 +11,5 @@
     <string name="apply">Übernehmen</string>
     <string name="abort">Abbrechen</string>
     <string name="hint_dueDate">Fällig am</string>
+    <string name="hint_contactfilter">Durchsuchen</string>
 </resources>

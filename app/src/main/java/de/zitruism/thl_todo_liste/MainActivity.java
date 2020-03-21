@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import de.zitruism.thl_todo_liste.interfaces.IMainActivity;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity implements IMainActivity {
@@ -23,4 +24,10 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
     public MyApplication getMyApplication() {
         return (MyApplication) this.getApplication();
     }
+
+    @Override
+    public ContentResolver getActivityContentResolver(){
+        return this.getContentResolver();
+    }
+
 }

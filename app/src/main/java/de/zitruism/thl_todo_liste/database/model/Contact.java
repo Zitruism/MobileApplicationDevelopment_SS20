@@ -12,12 +12,9 @@ public class Contact {
     private Uri iconURI;
 
 
-    public Contact(String id, String name, String number, Bitmap icon, Uri iconURI) {
+    public Contact(String id, String name) {
         this.id = id;
         this.name = name;
-        this.number = number;
-        this.icon = icon;
-        this.iconURI = iconURI;
     }
 
     public String getId() {
