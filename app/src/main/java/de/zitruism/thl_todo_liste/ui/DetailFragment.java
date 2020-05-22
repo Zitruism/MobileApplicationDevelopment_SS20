@@ -50,6 +50,7 @@ import de.zitruism.thl_todo_liste.database.model.ContactDetailElement;
 import de.zitruism.thl_todo_liste.database.model.Todo;
 import de.zitruism.thl_todo_liste.databinding.FragmentDetailBinding;
 import de.zitruism.thl_todo_liste.interfaces.IContactClickListener;
+import de.zitruism.thl_todo_liste.interfaces.IDetailViewCallback;
 import de.zitruism.thl_todo_liste.interfaces.IMainActivity;
 import de.zitruism.thl_todo_liste.network.ActiveContactLoaderTask;
 import de.zitruism.thl_todo_liste.network.AvailableContactLoaderTask;
@@ -58,7 +59,7 @@ import de.zitruism.thl_todo_liste.ui.adapters.TodoContactListAdapter;
 import de.zitruism.thl_todo_liste.ui.viewmodel.DetailViewModel;
 import de.zitruism.thl_todo_liste.ui.viewmodel.ViewModelFactory;
 
-public class DetailFragment extends Fragment implements View.OnClickListener, IContactClickListener {
+public class DetailFragment extends Fragment implements View.OnClickListener, IContactClickListener, IDetailViewCallback {
 
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     private static final int MY_PERMISSIONS_REQUEST_READ_ONLY_TODO_CONTACTS = 101;
@@ -137,9 +138,11 @@ public class DetailFragment extends Fragment implements View.OnClickListener, IC
                 viewModel.getTodo(todoId).observe(getViewLifecycleOwner(), new Observer<Todo>() {
                     @Override
                     public void onChanged(Todo todo) {
-                        viewModel.setTodo(todo);
-                        binding.setTodo(todo);
-                        setBindingContacts();
+                        if(todo != null){
+                            viewModel.setTodo(todo);
+                            binding.setTodo(todo);
+                            setBindingContacts();
+                        }
                     }
                 });
             else
@@ -147,8 +150,10 @@ public class DetailFragment extends Fragment implements View.OnClickListener, IC
                 viewModel.getTodo().observe(getViewLifecycleOwner(), new Observer<Todo>() {
                     @Override
                     public void onChanged(Todo todo) {
-                        binding.setTodo(todo);
-                        setBindingContacts();
+                        if(todo != null){
+                            binding.setTodo(todo);
+                            setBindingContacts();
+                        }
                     }
                 });
         }else{
@@ -157,7 +162,10 @@ public class DetailFragment extends Fragment implements View.OnClickListener, IC
             viewModel.getTodo().observe(getViewLifecycleOwner(), new Observer<Todo>() {
                 @Override
                 public void onChanged(Todo todo) {
-                    binding.setTodo(todo);
+                    if(todo != null){
+                        binding.setTodo(todo);
+                        setBindingContacts();
+                    }
                 }
             });
         }
@@ -165,6 +173,13 @@ public class DetailFragment extends Fragment implements View.OnClickListener, IC
             @Override
             public void onChanged(List<Contact> contacts) {
                 binding.setContacts(contacts);
+            }
+        });
+
+        viewModel.getLocked().observe(this.getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                binding.setLocked(aBoolean);
             }
         });
     }
@@ -269,9 +284,9 @@ public class DetailFragment extends Fragment implements View.OnClickListener, IC
         builder.setMessage(R.string.dialog_confirmTodoDeletion)
                 .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        viewModel.deleteTodo(binding.getTodo());
+                        viewModel.setLocked(true);
+                        viewModel.deleteTodo(binding.getTodo(), mListener.isWebServiceAvailable(), DetailFragment.this);
                         dialog.dismiss();
-                        navToList();
                     }
                 })
                 .setNegativeButton(R.string.abort, new DialogInterface.OnClickListener() {
@@ -283,11 +298,11 @@ public class DetailFragment extends Fragment implements View.OnClickListener, IC
     }
 
     private void createTodo(Todo todo) {
-        viewModel.insert(todo);
+        viewModel.insert(todo, mListener.isWebServiceAvailable());
     }
 
     private void saveTodo(Todo todo){
-        viewModel.updateTodo(todo);
+        viewModel.updateTodo(todo, mListener.isWebServiceAvailable());
     }
 
     private void navToList(){
@@ -420,13 +435,14 @@ public class DetailFragment extends Fragment implements View.OnClickListener, IC
 
                     contacts.addAll(selectedIds);
                     todo.setContacts(contacts);
-                    //binding.setTodo(todo);
-                    viewModel.setTodo(todo);
+                    binding.setTodo(todo);
                     setBindingContacts();
+                    viewModel.setTodo(todo);
                     contactListDialog.dismiss();
                 }
             });
         }
+        contactListAdapter.setData(null);
         new AvailableContactLoaderTask(mListener, binding.getTodo().getContacts(), contactListAdapter).execute();
         contactListDialog.show();
     }
@@ -446,6 +462,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener, IC
         todo.setContacts(contacts);
         binding.setTodo(todo);
         setBindingContacts();
+        viewModel.setTodo(todo);
     }
 
     private Contact getSelectedContact(String key){
@@ -607,5 +624,10 @@ public class DetailFragment extends Fragment implements View.OnClickListener, IC
         AlertDialog.Builder builder = new AlertDialog.Builder(mListener.getActivity());
         builder.setTitle(R.string.selectnumber);
         return builder;
+    }
+
+    @Override
+    public void onDeleted() {
+        navToList();
     }
 }

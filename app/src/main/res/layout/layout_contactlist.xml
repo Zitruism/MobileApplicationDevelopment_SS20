@@ -5,21 +5,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/hint_contactfilter">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/listFilter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:inputType="text"/>
-
-    </com.google.android.material.textfield.TextInputLayout>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/contactList"
         android:layout_width="match_parent"
@@ -27,7 +12,7 @@
         android:layout_weight="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/listFilter"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/apply"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
@@ -43,7 +28,7 @@
             app:layout_constraintTop_toBottomOf="@id/contactList"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/apply"
-            android:text="@string/abort"/>
+            android:text="@string/abort" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/apply"

@@ -32,10 +32,10 @@ public interface TodoDAO {
     long insert(Todo todo);
 
     @Query("UPDATE Todo SET done = :isDone WHERE id LIKE :id;")
-    void updateDone(Long id, boolean isDone);
+    int updateDone(Long id, boolean isDone);
 
     @Query("UPDATE Todo SET favourite = :isFavorite WHERE id LIKE :id;")
-    void updateFavorite(Long id, boolean isFavorite);
+    int updateFavorite(Long id, boolean isFavorite);
 
     @Delete
     int delete(Todo todo);

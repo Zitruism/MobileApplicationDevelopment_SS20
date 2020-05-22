@@ -85,16 +85,6 @@ public class ActiveContactLoaderTask extends AsyncTask<Void, Void, ArrayList<Con
                 );
 
                 contacts.add(contact);
-
-                /*if(ids != null){
-                    if(ids.contains(contact.getId()) && include){
-                        contacts.add(contact);
-                    }else if (!ids.contains(contact.getId()) && !include){
-                        contacts.add(contact);
-                    }
-                }else{
-                    contacts.add(contact);
-                }*/
             }
         }
         if(cur!=null){

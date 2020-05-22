@@ -22,13 +22,14 @@
             android:src="@drawable/ic_timer_black_24dp"
             app:showExpiredIcon="@{todo.expiry}"/>
 
-        <ImageView
+        <ImageButton
             android:id="@+id/isFavorite"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:isFavorite="@{todo.isFavourite()}"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/expiredIcon" />
+            app:layout_constraintStart_toEndOf="@id/expiredIcon"
+            android:background="@android:color/transparent"/>
 
         <TextView
             android:id="@+id/name"
@@ -47,13 +48,14 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/isDone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:isDone="@{todo.isDone()}"
             app:layout_constraintTop_toBottomOf="@id/dueDate"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@android:color/transparent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

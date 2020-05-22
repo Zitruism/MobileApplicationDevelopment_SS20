@@ -29,6 +29,11 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             this.selectedIds.clear();
             this.contacts = contacts;
             this.notifyDataSetChanged();
+        }else{
+            if(this.contacts != null){
+                this.contacts.clear();
+                this.notifyDataSetChanged();
+            }
         }
     }
 

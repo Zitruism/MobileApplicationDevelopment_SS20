@@ -1,6 +1,5 @@
 package de.zitruism.thl_todo_liste.database.repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -40,12 +39,12 @@ public class TodoRepository {
 
     public long[] insertTodos(List<Todo> todos){return todoDAO.insertAll(todos);};
 
-    public void updateDone(Long id, boolean isDone){
-        todoDAO.updateDone(id, isDone);
+    public int updateDone(Long id, boolean isDone){
+        return todoDAO.updateDone(id, isDone);
     }
 
-    public void updateFavorite(Long id, boolean isFavorite){
-        todoDAO.updateFavorite(id, isFavorite);
+    public int updateFavorite(Long id, boolean isFavorite){
+        return todoDAO.updateFavorite(id, isFavorite);
     }
 
     public void updateTodo(Todo todo){

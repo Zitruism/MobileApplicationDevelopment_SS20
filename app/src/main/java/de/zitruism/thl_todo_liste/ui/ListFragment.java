@@ -150,12 +150,12 @@ public class ListFragment extends Fragment implements View.OnClickListener, ITod
 
     @Override
     public void updateDone(Long id, boolean isDone) {
-        viewModel.updateDone(id, isDone);
+        viewModel.updateDone(id, isDone, mListener.isWebServiceAvailable());
     }
 
     @Override
     public void updateFavorite(Long id, boolean isFavorite) {
-        viewModel.updateFavorite(id, isFavorite);
+        viewModel.updateFavorite(id, isFavorite, mListener.isWebServiceAvailable());
     }
 
     @Override

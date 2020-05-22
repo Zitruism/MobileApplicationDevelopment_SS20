@@ -15,7 +15,6 @@ import de.zitruism.thl_todo_liste.network.interfaces.IWebService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class ListViewModel extends ViewModel {
 
@@ -32,12 +31,12 @@ public class ListViewModel extends ViewModel {
         return todoRepository.getAll();
     }
 
-    public void updateDone(Long id, boolean isDone){
-        new UpdateDone(todoRepository, id, isDone, webservice).execute();
+    public void updateDone(Long id, boolean isDone, boolean doWebCall){
+        new UpdateDone(todoRepository, id, isDone, webservice, doWebCall).execute();
     }
 
-    public void updateFavorite(Long id, boolean isFavorite){
-        new UpdateFavorite(todoRepository, id, isFavorite, webservice).execute();
+    public void updateFavorite(Long id, boolean isFavorite, boolean doWebCall){
+        new UpdateFavorite(todoRepository, id, isFavorite, webservice, doWebCall).execute();
     }
 
     public void syncTodos() {
@@ -58,28 +57,32 @@ public class ListViewModel extends ViewModel {
         private final Long id;
         private final boolean isDone;
         private IWebService webService;
+        private final boolean doWebCall;
 
-        UpdateDone(TodoRepository todoRepository, Long id, boolean isDone, IWebService webService) {
+        UpdateDone(TodoRepository todoRepository, Long id, boolean isDone, IWebService webService, boolean doWebCall) {
             this.todoRepository = todoRepository;
             this.id = id;
             this.isDone = isDone;
             this.webService = webService;
+            this.doWebCall = doWebCall;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            todoRepository.updateDone(id, isDone);
-            webService.putTodo(id, todoRepository.readTodo(id)).enqueue(new Callback<Todo>() {
-                @Override
-                public void onResponse(Call<Todo> call, Response<Todo> response) {
+            int updated = todoRepository.updateDone(id, isDone);
+            if(updated > 0 && doWebCall){
+                webService.putTodo(id, todoRepository.readTodo(id)).enqueue(new Callback<Todo>() {
+                    @Override
+                    public void onResponse(Call<Todo> call, Response<Todo> response) {
 
-                }
+                    }
 
-                @Override
-                public void onFailure(Call<Todo> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<Todo> call, Throwable t) {
 
-                }
-            });
+                    }
+                });
+            }
             return null;
         }
     }
@@ -90,33 +93,37 @@ public class ListViewModel extends ViewModel {
         private final Long id;
         private final boolean isDone;
         private IWebService webService;
+        private final boolean doWebCall;
 
-        UpdateFavorite(TodoRepository todoRepository, Long id, boolean isDone, IWebService webService) {
+        UpdateFavorite(TodoRepository todoRepository, Long id, boolean isDone, IWebService webService, boolean doWebCall) {
             this.todoRepository = todoRepository;
             this.id = id;
             this.isDone = isDone;
             this.webService = webService;
+            this.doWebCall = doWebCall;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            todoRepository.updateFavorite(id, isDone);
-            webService.putTodo(id, todoRepository.readTodo(id)).enqueue(new Callback<Todo>() {
-                @Override
-                public void onResponse(Call<Todo> call, Response<Todo> response) {
+            int updated = todoRepository.updateFavorite(id, isDone);
+            if(updated > 0 && doWebCall){
+                webService.putTodo(id, todoRepository.readTodo(id)).enqueue(new Callback<Todo>() {
+                    @Override
+                    public void onResponse(Call<Todo> call, Response<Todo> response) {
 
-                }
+                    }
 
-                @Override
-                public void onFailure(Call<Todo> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<Todo> call, Throwable t) {
 
-                }
-            });
+                    }
+                });
+            }
             return null;
         }
     }
 
-    // Webservice calls
+   /* // Webservice calls
     public void getWebTodos(Callback<List<Todo>> callback){
 
 
@@ -134,7 +141,7 @@ public class ListViewModel extends ViewModel {
         });
 
     }
-
+*/
 
 
 }

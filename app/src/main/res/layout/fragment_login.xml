@@ -96,7 +96,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rememberMe"
             android:text="@string/login"
-            android:enabled="@{email.length() > 0 &amp;&amp; password.length() > 0 &amp;&amp; loading == false}"/>
+            android:enabled="@{email.length() > 0 &amp;&amp; password.length() == 6 &amp;&amp; loading == false}"/>
 
         <TextView
             android:layout_width="0dp"

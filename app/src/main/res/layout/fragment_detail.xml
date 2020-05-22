@@ -9,6 +9,9 @@
         <variable
             name="contacts"
             type="java.util.List" />
+        <variable
+            name="locked"
+            type="Boolean" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -42,11 +45,11 @@
                         android:text="@={todo.name}"
                         android:maxLines="1"
                         android:inputType="text"
-                        android:transitionName="TRANSITION_NAME"/>
+                        android:enabled="@{locked ? false : true}"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/isFavorite"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
@@ -54,9 +57,10 @@
                     app:layout_constraintEnd_toStartOf="@+id/isDone"
                     app:layout_constraintTop_toTopOf="@id/name"
                     app:layout_constraintBottom_toBottomOf="@id/name"
-                    android:transitionName="TRANSITION_FAVORITE" />
+                    android:enabled="@{locked ? false : true}"
+                    android:background="@android:color/transparent"/>
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/isDone"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
@@ -64,7 +68,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/name"
                     app:layout_constraintBottom_toBottomOf="@id/name"
-                    android:transitionName="TRANSITION_DONE"/>
+                    android:enabled="@{locked ? false : true}"
+                    android:background="@android:color/transparent"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/dueDate"
@@ -81,7 +86,7 @@
                         android:layout_height="wrap_content"
                         android:focusableInTouchMode="false"
                         app:date="@{todo.getExpiry()}"
-                        android:transitionName="TRANSITION_DUEDATE"/>
+                        android:enabled="@{locked ? false : true}"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -97,7 +102,8 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@={todo.description}" />
+                        android:text="@={todo.description}"
+                        android:enabled="@{locked ? false : true}"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -107,7 +113,8 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@id/description"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:text="@string/btn_addContact" />
+                    android:text="@string/btn_addContact"
+                    android:enabled="@{locked ? false : true}"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/contactList"
@@ -117,7 +124,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:data="@{contacts}"/>
+                    app:data="@{contacts}"
+                    android:enabled="@{locked ? false : true}"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -140,7 +148,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 style="?android:attr/buttonBarNegativeButtonStyle"
-                android:text="@string/btn_abort"/>
+                android:text="@string/btn_abort"
+                android:enabled="@{locked ? false : true}"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/save"
@@ -149,9 +158,18 @@
                 android:layout_weight="1"
                 style="?android:attr/buttonBarPositiveButtonStyle"
                 android:text="@{todo.id != null ? @string/btn_save : @string/btn_create}"
-                android:enabled="@{todo.name.length() > 0 &amp;&amp; todo.expiry != null}"/>
+                android:enabled="@{(todo.name.length() > 0 &amp;&amp; todo.expiry != null) &amp;&amp; (locked == false)}" />
 
         </LinearLayout>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="@{locked ? View.VISIBLE : View.GONE}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
