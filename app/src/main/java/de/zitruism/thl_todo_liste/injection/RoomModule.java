@@ -7,11 +7,9 @@ import javax.inject.Singleton;
 import androidx.room.Room;
 import dagger.Module;
 import dagger.Provides;
-import de.zitruism.thl_todo_liste.MyApplication;
 import de.zitruism.thl_todo_liste.database.AppDatabase;
 import de.zitruism.thl_todo_liste.database.dao.TodoDAO;
 import de.zitruism.thl_todo_liste.database.repository.TodoRepository;
-import de.zitruism.thl_todo_liste.ui.viewmodel.ViewModelFactory;
 
 @Module
 public class RoomModule {

@@ -16,24 +16,37 @@ public interface TodoDAO {
     @Query("SELECT * FROM Todo")
     LiveData<List<Todo>> getAll();
 
+    @Query("SELECT * FROM Todo")
+    List<Todo> getAllTodos();
+
     @Query("SELECT * FROM Todo WHERE id LIKE :id")
-    LiveData<Todo> getTodo(Integer id);
+    LiveData<Todo> getTodo(Long id);
+
+    @Query("SELECT * FROM Todo WHERE id LIKE :id")
+    Todo readTodo(Long id);
 
     @Insert
-    void insertAll(Todo... todos);
+    long[] insertAll(List<Todo> todos);
 
     @Insert
-    void insert(Todo todo);
+    long insert(Todo todo);
 
     @Query("UPDATE Todo SET done = :isDone WHERE id LIKE :id;")
-    void updateDone(Integer id, boolean isDone);
+    void updateDone(Long id, boolean isDone);
 
-    @Query("UPDATE Todo SET favorite = :isFavorite WHERE id LIKE :id;")
-    void updateFavorite(Integer id, boolean isFavorite);
+    @Query("UPDATE Todo SET favourite = :isFavorite WHERE id LIKE :id;")
+    void updateFavorite(Long id, boolean isFavorite);
 
     @Delete
-    void delete(Todo todo);
+    int delete(Todo todo);
+
+    @Query("DELETE FROM Todo")
+    int deleteAll();
 
     @Update
     void updateTodo(Todo todo);
+
+    @Query("SELECT count(*) FROM Todo")
+    int count();
+
 }

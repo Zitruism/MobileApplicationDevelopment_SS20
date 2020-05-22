@@ -4,13 +4,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.AsyncListDiffer;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import de.zitruism.thl_todo_liste.R;
 import de.zitruism.thl_todo_liste.database.model.Todo;
@@ -20,26 +22,45 @@ import de.zitruism.thl_todo_liste.interfaces.ITodoStateListener;
 
 public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.ViewHolder> implements View.OnClickListener {
 
-    private List<Todo> todos;
+    private final AsyncListDiffer<Todo> mDiffer = new AsyncListDiffer<Todo>(this, DIFF_CALLBACK);
+
+    private static final DiffUtil.ItemCallback<Todo> DIFF_CALLBACK
+            = new DiffUtil.ItemCallback<Todo>() {
+        @Override
+        public boolean areItemsTheSame(
+                @NonNull Todo oldUser, @NonNull Todo newUser) {
+            // User properties may have changed if reloaded from the DB, but ID is fixed
+            return oldUser.getId().equals(newUser.getId());
+        }
+        @Override
+        public boolean areContentsTheSame(
+                @NonNull Todo oldUser, @NonNull Todo newUser) {
+            // NOTE: if you use equals, your object must properly override Object#equals()
+            // Incorrectly returning false here will result in too many animations.
+            return oldUser.equals(newUser);
+        }
+    };
 
     private final ITodoStateListener mListener;
     private final IListClickListener clickListener;
 
-    public TodoListAdapter(ITodoStateListener mListener, IListClickListener clickListener) {
+    private boolean favoritebeforedate;
+
+    public void setSortOrder(boolean favoritebeforedate){
+        this.favoritebeforedate = favoritebeforedate;
+        this.sortData();
+    }
+
+    public TodoListAdapter(ITodoStateListener mListener, IListClickListener clickListener, boolean favoritebeforedate) {
         this.mListener = mListener;
         this.clickListener = clickListener;
+        this.favoritebeforedate = favoritebeforedate;
     }
 
-    public void setData(List<Todo> todos){
-        if(todos != null){
-            this.todos = todos;
-            this.sortData();
-        }
-    }
-
-    public void sortData(){
-        Collections.sort(this.todos, new TodoComparator(false));
-        this.notifyDataSetChanged();
+    private void sortData(){
+        List<Todo> sortedList = new ArrayList<>(mDiffer.getCurrentList());
+        Collections.sort(sortedList, new TodoComparator(favoritebeforedate));
+        mDiffer.submitList(sortedList);
     }
 
     @NonNull
@@ -55,13 +76,18 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.ViewHo
         holder.bind(this.getTodo(position));
     }
 
+    public void submitList(List<Todo> list) {
+        Collections.sort(list, new TodoComparator(favoritebeforedate));
+        mDiffer.submitList(list);
+    }
+
     @Override
     public int getItemCount() {
-        return todos != null ? todos.size() : 0;
+        return mDiffer.getCurrentList().size();
     }
 
     private Todo getTodo(int position){
-        return todos != null ? todos.get(position) : null;
+        return mDiffer.getCurrentList().get(position);
     }
 
     @Override
@@ -92,19 +118,19 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.ViewHo
             if(i != 0) return i;
 
             if(sortFavoriteAndDate){
-                if(o1.isFavorite() && !o2.isFavorite())
+                if(o1.isFavourite() && !o2.isFavourite())
                     i = -1;
-                else if(!o1.isFavorite() && o2.isFavorite())
+                else if(!o1.isFavourite() && o2.isFavourite())
                     i = 1;
                 if(i != 0) return i;
-                i = o1.getDueDate().compareTo(o2.getDueDate());
+                i = o1.getExpiry().compareTo(o2.getExpiry());
             }else{
-                i = o1.getDueDate().compareTo(o2.getDueDate());
+                i = o1.getExpiry().compareTo(o2.getExpiry());
                 if(i != 0) return i;
 
-                if(o1.isFavorite() && !o2.isFavorite())
+                if(o1.isFavourite() && !o2.isFavourite())
                     i = -1;
-                else if(!o1.isFavorite() && o2.isFavorite())
+                else if(!o1.isFavourite() && o2.isFavourite())
                     i = 1;
             }
 
@@ -141,7 +167,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.ViewHo
                     break;
                 case R.id.isFavorite:
                     //Change favorite state
-                    mListener.updateFavorite(binding.getTodo().getId(), !binding.getTodo().isFavorite());
+                    mListener.updateFavorite(binding.getTodo().getId(), !binding.getTodo().isFavourite());
                     break;
             }
         }

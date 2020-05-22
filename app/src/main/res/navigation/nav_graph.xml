@@ -17,8 +17,7 @@
         android:label="DetailFragment" >
         <argument
             android:name="TODO_ID"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            app:argType="long" />
         <action
             android:id="@+id/action_detailFragment_to_listFragment"
             app:destination="@id/listFragment"
@@ -36,5 +35,16 @@
             app:launchSingleTop="true"
             app:popUpTo="@id/startFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_startFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="de.zitruism.thl_todo_liste.ui.LoginFragment"
+        android:label="LoginFragment" >
+        <action
+            android:id="@+id/action_loginFragment_to_listFragment"
+            app:destination="@id/listFragment" />
     </fragment>
 </navigation>

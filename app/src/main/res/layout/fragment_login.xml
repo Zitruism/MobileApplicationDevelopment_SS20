@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="email"
+            type="String" />
+        <variable
+            name="password"
+            type="String" />
+        <variable
+            name="isEmailValid"
+            type="Boolean" />
+        <variable
+            name="loginError"
+            type="Boolean" />
+        <variable
+            name="loading"
+            type="Boolean" />
+        <variable
+            name="loadingProgress"
+            type="Integer" />
+        <variable
+            name="rememberme"
+            type="Boolean"/>
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_email"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/emailEdittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@={email}"
+                android:maxLines="1"
+                android:inputType="textEmailAddress"
+                android:enabled="@{loading ? false : true}"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/errortext_email"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/emailLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="@{isEmailValid ? View.GONE : View.VISIBLE}"
+            android:text="@string/error_emailnotvalid"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_password"
+            app:layout_constraintTop_toBottomOf="@id/errortext_email"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordEdittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@={password}"
+                android:maxLines="1"
+                android:inputType="numberPassword"
+                android:maxLength="6"
+                android:enabled="@{loading ? false : true}"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Switch
+            android:id="@+id/rememberMe"
+            app:layout_constraintTop_toBottomOf="@id/passwordLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/rememberme"
+            android:checked="@{rememberme}"
+            android:enabled="@{loading ? false : true}"/>
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rememberMe"
+            android:text="@string/login"
+            android:enabled="@{email.length() > 0 &amp;&amp; password.length() > 0 &amp;&amp; loading == false}"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_login"
+            android:visibility="@{loginError ? View.VISIBLE : View.GONE}"
+            android:text="@string/loginerror"/>
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:progress="@{loadingProgress}"
+            android:visibility="@{loading ? View.VISIBLE : View.GONE}"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -3,20 +3,21 @@ package de.zitruism.thl_todo_liste.database.model;
 
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 import de.zitruism.thl_todo_liste.database.converters.DateConverter;
 
 @Entity
-@TypeConverters(DateConverter.class)
+@TypeConverters({DateConverter.class})
 public class Todo {
 
     @PrimaryKey(autoGenerate = true)
-    private Integer id;
+    private Long id;
 
     private String name;
 
@@ -24,19 +25,19 @@ public class Todo {
 
     private boolean done = false;
 
-    private boolean favorite = false;
+    private boolean favourite = false;
 
-    private Date dueDate;
+    private Long expiry;
 
     private List<String> contacts = new ArrayList<>();
 
     public Todo() {}
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -64,27 +65,45 @@ public class Todo {
         this.done = done;
     }
 
-    public boolean isFavorite() {
-        return favorite;
+    public boolean isFavourite() {
+        return favourite;
     }
 
-    public void setFavorite(boolean favorite) {
-        this.favorite = favorite;
+    public void setFavourite(boolean favourite) {
+        this.favourite = favourite;
     }
 
-    public Date getDueDate() {
-        return dueDate;
+    public Long getExpiry() {
+        return expiry;
     }
 
-    public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
+    public void setExpiry(Long expiry) {
+        this.expiry = expiry;
     }
 
     public List<String> getContacts() {
-        return contacts;
+        return this.contacts;
     }
 
     public void setContacts(List<String> contacts) {
         this.contacts = contacts;
+    }
+
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return super.equals(obj);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getName());
+        if(getDescription().length() > 0) {
+            sb.append(" - ");
+            sb.append(getDescription());
+        }
+        return sb.toString();
     }
 }

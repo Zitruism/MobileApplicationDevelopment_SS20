@@ -2,6 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
+        <import type="android.view.View"/>
         <variable
             name="contact"
             type="de.zitruism.thl_todo_liste.database.model.Contact" />
@@ -20,6 +21,40 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/callContact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintEnd_toStartOf="@id/messageContact"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/ic_phone_black_24dp"
+
+            android:visibility="@{contact.numbers.size() > 0 ? View.VISIBLE : View.GONE}"/>
+
+        <ImageButton
+            android:id="@+id/messageContact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintEnd_toStartOf="@id/mailContact"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/ic_message_black_24dp"
+            android:visibility="@{contact.numbers.size() > 0 ? View.VISIBLE : View.GONE}"/>
+
+        <ImageButton
+            android:id="@+id/mailContact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintEnd_toStartOf="@id/deleteContact"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/ic_email_black_24dp"
+            android:visibility="@{contact.emails.size() > 0 ? View.VISIBLE : View.GONE}"/>
 
         <ImageButton
             android:id="@+id/deleteContact"

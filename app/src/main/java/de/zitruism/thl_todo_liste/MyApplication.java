@@ -5,6 +5,7 @@ import android.app.Application;
 import de.zitruism.thl_todo_liste.injection.ApplicationComponent;
 import de.zitruism.thl_todo_liste.injection.ApplicationModule;
 import de.zitruism.thl_todo_liste.injection.DaggerApplicationComponent;
+import de.zitruism.thl_todo_liste.injection.RequestModule;
 import de.zitruism.thl_todo_liste.injection.RoomModule;
 import de.zitruism.thl_todo_liste.injection.ViewModelModule;
 
@@ -21,6 +22,7 @@ public class MyApplication extends Application {
                 .applicationModule(new ApplicationModule(this))
                 .roomModule(new RoomModule(this))
                 .viewModelModule(new ViewModelModule())
+                .requestModule(new RequestModule())
                 .build();
     }
 

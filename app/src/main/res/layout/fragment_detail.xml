@@ -2,6 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
+        <import type="android.view.View"/>
         <variable
             name="todo"
             type="de.zitruism.thl_todo_liste.database.model.Todo" />
@@ -40,7 +41,8 @@
                         android:layout_height="wrap_content"
                         android:text="@={todo.name}"
                         android:maxLines="1"
-                        android:inputType="text"/>
+                        android:inputType="text"
+                        android:transitionName="TRANSITION_NAME"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -48,10 +50,11 @@
                     android:id="@+id/isFavorite"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    app:isFavorite="@{todo.isFavorite()}"
+                    app:isFavorite="@{todo.isFavourite()}"
                     app:layout_constraintEnd_toStartOf="@+id/isDone"
                     app:layout_constraintTop_toTopOf="@id/name"
-                    app:layout_constraintBottom_toBottomOf="@id/name"/>
+                    app:layout_constraintBottom_toBottomOf="@id/name"
+                    android:transitionName="TRANSITION_FAVORITE" />
 
                 <ImageView
                     android:id="@+id/isDone"
@@ -60,23 +63,8 @@
                     app:isDone="@{todo.isDone()}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/name"
-                    app:layout_constraintBottom_toBottomOf="@id/name" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/description"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/dueDate"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:hint="@string/hint_description">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@={todo.description}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
+                    app:layout_constraintBottom_toBottomOf="@id/name"
+                    android:transitionName="TRANSITION_DONE"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/dueDate"
@@ -92,7 +80,24 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:focusableInTouchMode="false"
-                        app:date="@{todo.getDueDate()}"/>
+                        app:date="@{todo.getExpiry()}"
+                        android:transitionName="TRANSITION_DUEDATE"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/dueDate"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:hint="@string/hint_description">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@={todo.description}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -143,7 +148,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 style="?android:attr/buttonBarPositiveButtonStyle"
-                android:text="@{todo.id != null ? @string/btn_save : @string/btn_create}"/>
+                android:text="@{todo.id != null ? @string/btn_save : @string/btn_create}"
+                android:enabled="@{todo.name.length() > 0 &amp;&amp; todo.expiry != null}"/>
 
         </LinearLayout>
 

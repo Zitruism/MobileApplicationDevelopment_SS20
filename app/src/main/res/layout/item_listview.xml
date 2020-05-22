@@ -9,15 +9,26 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp">
+        android:padding="5dp"
+        app:isExpired="@{todo.getExpiry()}">
+
+        <ImageView
+            android:id="@+id/expiredIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/ic_timer_black_24dp"
+            app:showExpiredIcon="@{todo.expiry}"/>
 
         <ImageView
             android:id="@+id/isFavorite"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:isFavorite="@{todo.isFavorite()}"
+            app:isFavorite="@{todo.isFavourite()}"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toEndOf="@id/expiredIcon" />
 
         <TextView
             android:id="@+id/name"
@@ -26,15 +37,15 @@
             android:text="@{todo.getName()}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/isFavorite"
-            app:layout_constraintEnd_toStartOf="@+id/dueDate"/>
+            app:layout_constraintEnd_toStartOf="@+id/dueDate" />
 
         <TextView
             android:id="@+id/dueDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:date="@{todo.getDueDate()}"
+            app:date="@{todo.getExpiry()}"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView
             android:id="@+id/isDone"

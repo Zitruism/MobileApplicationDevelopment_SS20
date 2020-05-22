@@ -12,14 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import de.zitruism.thl_todo_liste.R;
 import de.zitruism.thl_todo_liste.database.model.Contact;
 import de.zitruism.thl_todo_liste.databinding.ItemContactBinding;
+import de.zitruism.thl_todo_liste.interfaces.IContactClickListener;
 import de.zitruism.thl_todo_liste.interfaces.IListClickListener;
 
 public class TodoContactListAdapter extends RecyclerView.Adapter<TodoContactListAdapter.ViewHolder> {
 
     private List<Contact> contacts;
-    private IListClickListener mListener;
+    private IContactClickListener mListener;
 
-    public TodoContactListAdapter(IListClickListener mListener) {
+    public TodoContactListAdapter(IContactClickListener mListener) {
         this.mListener = mListener;
     }
 
@@ -59,23 +60,43 @@ public class TodoContactListAdapter extends RecyclerView.Adapter<TodoContactList
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final ItemContactBinding binding;
-        private final IListClickListener mListener;
+        private final IContactClickListener mListener;
 
-        ViewHolder(@NonNull ItemContactBinding binding, IListClickListener mListener) {
+        ViewHolder(@NonNull ItemContactBinding binding, IContactClickListener mListener) {
             super(binding.getRoot());
             this.mListener = mListener;
             this.binding = binding;
             this.binding.deleteContact.setOnClickListener(this);
+            this.binding.callContact.setOnClickListener(this);
+            this.binding.messageContact.setOnClickListener(this);
+            this.binding.mailContact.setOnClickListener(this);
+
         }
 
         void bind(Contact contact) {
             binding.setContact(contact);
             binding.deleteContact.setTag(binding.getContact().getId());
+            binding.callContact.setTag(binding.getContact().getId());
+            binding.messageContact.setTag(binding.getContact().getId());
+            binding.mailContact.setTag(binding.getContact().getId());
         }
 
         @Override
         public void onClick(View v) {
-            mListener.onListClick(v);
+            switch(v.getId()){
+                case R.id.deleteContact:
+                    mListener.onDeleteClick(v);
+                    break;
+                case R.id.callContact:
+                    mListener.onCallClick(v);
+                    break;
+                case R.id.messageContact:
+                    mListener.onMessageClick(v);
+                    break;
+                case R.id.mailContact:
+                    mListener.onMailClick(v);
+                    break;
+            }
         }
     }
 }

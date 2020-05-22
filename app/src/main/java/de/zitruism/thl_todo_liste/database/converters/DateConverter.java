@@ -20,9 +20,9 @@ public class DateConverter {
     }
 
     @TypeConverter
-    public static String fromList(List<?> list){
+    public static String fromList(List<String> list){
         if(list == null)
-            return null;
+            return "";
 
         StringBuilder sb = new StringBuilder();
         for(int i=0; i < list.size(); i++){
@@ -38,6 +38,9 @@ public class DateConverter {
     public static List<String> toList(String listString){
         if(listString == null)
             return null;
+        if(listString.startsWith("_")){
+            listString = listString.substring(1);
+        }
         String[] parts = listString.split("_");
         return new ArrayList<>(Arrays.asList(parts));
     }

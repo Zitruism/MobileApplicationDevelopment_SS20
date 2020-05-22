@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:title="@string/sortorder"
+        android:icon="@drawable/ic_sort_black_24dp"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/sortFavoriteBeforeDate"
+                android:title="@string/importanceanddate"
+                />
+            <item
+                android:id="@+id/sortDateBeforeFavorite"
+                android:title="@string/dateandimportance"
+                />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/deleteLocal"
+        android:icon="@drawable/ic_check_black_24dp_transparent"
+        android:title="@string/deleteLocal"
+        />
+    <item
+        android:id="@+id/deleteRemote"
+        android:icon="@drawable/ic_check_black_24dp_transparent"
+        android:title="@string/deleteRemote"
+        />
+    <item
+        android:id="@+id/sync"
+        android:icon="@drawable/ic_sync_black_24dp"
+        android:title="@string/sync"
+        app:showAsAction="ifRoom"
+        />
+
+</menu>

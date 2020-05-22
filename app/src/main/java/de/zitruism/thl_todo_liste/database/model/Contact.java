@@ -1,16 +1,21 @@
 package de.zitruism.thl_todo_liste.database.model;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
+import java.util.List;
 
 public class Contact {
 
     private String id;
     private String name;
-    private String number;
-    private Bitmap icon;
-    private Uri iconURI;
+    private List<ContactDetailElement> numbers;
+    private List<ContactDetailElement> emails;
 
+
+    public Contact(String id, String name, List<ContactDetailElement> numbers, List<ContactDetailElement> emails) {
+        this.id = id;
+        this.name = name;
+        this.numbers = numbers;
+        this.emails = emails;
+    }
 
     public Contact(String id, String name) {
         this.id = id;
@@ -25,15 +30,11 @@ public class Contact {
         return name;
     }
 
-    public String getNumber() {
-        return number;
+    public List<ContactDetailElement> getNumbers() {
+        return numbers;
     }
 
-    public Bitmap getIcon() {
-        return icon;
-    }
-
-    public Uri getIconURI() {
-        return iconURI;
+    public List<ContactDetailElement> getEmails() {
+        return emails;
     }
 }

@@ -5,9 +5,14 @@ import de.zitruism.thl_todo_liste.interfaces.IMainActivity;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity implements IMainActivity {
+
+    private boolean webserviceAvailable = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,5 +34,31 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
     public ContentResolver getActivityContentResolver(){
         return this.getContentResolver();
     }
+
+    @Override
+    public boolean isWebServiceAvailable() {
+        return this.webserviceAvailable;
+    }
+
+    @Override
+    public void setWebServiceAvailable(boolean available) {
+        this.webserviceAvailable = available;
+    }
+
+    @Override
+    public View getRootView() {
+        return findViewById(R.id.rootLayout);
+    }
+
+    @Override
+    public SharedPreferences getSharedPreferences() {
+        return getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+    }
+
+    @Override
+    public void setToolbarTitle(String title) {
+        setTitle(title);
+    }
+
 
 }

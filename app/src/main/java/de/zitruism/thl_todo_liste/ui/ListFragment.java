@@ -3,6 +3,9 @@ package de.zitruism.thl_todo_liste.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -24,12 +27,12 @@ import de.zitruism.thl_todo_liste.interfaces.IListClickListener;
 import de.zitruism.thl_todo_liste.interfaces.IMainActivity;
 import de.zitruism.thl_todo_liste.interfaces.ITodoStateListener;
 import de.zitruism.thl_todo_liste.ui.adapters.TodoListAdapter;
-import de.zitruism.thl_todo_liste.ui.viewmodel.DetailViewModel;
 import de.zitruism.thl_todo_liste.ui.viewmodel.ListViewModel;
 import de.zitruism.thl_todo_liste.ui.viewmodel.ViewModelFactory;
 
 public class ListFragment extends Fragment implements View.OnClickListener, ITodoStateListener, IListClickListener {
 
+    private static final String SORTFAVORITEBEFOREDATE = "SORTFAVORITEBEFOREDATE";
     private IMainActivity mListener;
     private FragmentListBinding binding;
 
@@ -37,6 +40,7 @@ public class ListFragment extends Fragment implements View.OnClickListener, ITod
     ViewModelFactory viewModelFactory;
 
     private ListViewModel viewModel;
+    private TodoListAdapter adapter;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -86,37 +90,82 @@ public class ListFragment extends Fragment implements View.OnClickListener, ITod
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        mListener.setToolbarTitle(getString(R.string.listview_title));
+
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list, container,false);
         binding.setLifecycleOwner(this);
-        binding.listView.setAdapter(new TodoListAdapter(this, this));
+        adapter = new TodoListAdapter(this, this, getSortOrder());
+        binding.listView.setAdapter(adapter);
         binding.addButton.setOnClickListener(this);
+
+        //Show toolbar menu
+        setHasOptionsMenu(true);
 
         return binding.getRoot();
     }
-    
+
+    private boolean getSortOrder() {
+        return mListener.getSharedPreferences().getBoolean(SORTFAVORITEBEFOREDATE, true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.listmenu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.sortFavoriteBeforeDate:
+                saveSortOrder(true);
+                adapter.setSortOrder(true);
+                break;
+            case R.id.sortDateBeforeFavorite:
+                saveSortOrder(false);
+                adapter.setSortOrder(false);
+                break;
+            case R.id.deleteLocal:
+                viewModel.deleteLocal();
+                break;
+            case R.id.deleteRemote:
+                viewModel.deleteRemote();
+                break;
+            case R.id.sync:
+                viewModel.syncTodos();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void saveSortOrder(boolean favoriteBeforeDate){
+        mListener.getSharedPreferences().edit().putBoolean(SORTFAVORITEBEFOREDATE, favoriteBeforeDate).apply();
+    }
+
     @Override
     public void onClick(View v) {
         NavHostFragment.findNavController(this).navigate(R.id.action_listFragment_to_detailFragment);
     }
 
     @Override
-    public void updateDone(Integer id, boolean isDone) {
+    public void updateDone(Long id, boolean isDone) {
         viewModel.updateDone(id, isDone);
     }
 
     @Override
-    public void updateFavorite(Integer id, boolean isFavorite) {
+    public void updateFavorite(Long id, boolean isFavorite) {
         viewModel.updateFavorite(id, isFavorite);
     }
 
     @Override
     public void onListClick(View v) {
         //Go to Detailview
-        int id = (int) v.getTag();
+        Long id = (Long) v.getTag();
 
         //Navigate to Detailpage with given id.
         Bundle b = new Bundle();
-        b.putInt("TODO_ID", id);
+        b.putLong("TODO_ID", id);
 
         NavHostFragment.findNavController(this).navigate(R.id.action_listFragment_to_detailFragment, b);
     }
