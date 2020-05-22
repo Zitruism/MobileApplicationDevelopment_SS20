@@ -375,12 +375,12 @@ public class DetailFragment extends Fragment implements View.OnClickListener, IC
                 != PackageManager.PERMISSION_GRANTED) {
 
             if(onlyTodo){
-                ActivityCompat.requestPermissions(mListener.getActivity(),
+                requestPermissions(
                         new String[]{Manifest.permission.READ_CONTACTS},
                         MY_PERMISSIONS_REQUEST_READ_ONLY_TODO_CONTACTS);
                 return false;
             }else{
-                ActivityCompat.requestPermissions(mListener.getActivity(),
+                requestPermissions(
                         new String[]{Manifest.permission.READ_CONTACTS},
                         MY_PERMISSIONS_REQUEST_READ_CONTACTS);
                 return false;
